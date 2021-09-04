@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -11,10 +12,50 @@ from django.contrib.auth import login
 from django.views import View
 from django.shortcuts import redirect
 from django.db import transaction
-
 from .models import Task
 from .forms import PositionForm
-# Create your views here.
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import TaskSerializer
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Task
+
+
+@api_view(['GET'])
+def TaskListAPI(request):
+    tasks = Task.objects.all()
+    serializer = TaskSerializer(tasks, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def TaskDetailAPI(request, pk):
+    tasks = Task.objects.get(id=pk)
+    serializer = TaskSerializer(tasks, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def TaskCreateAPI(request):
+    serializer = TaskSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def TaskUpdateAPI(request, pk):
+    tasks = Task.objects.get(id=pk)
+    serializer = TaskSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def TaskDeleteAPI(request,pk):
+    tasks = Task.objects.get(id=pk)
+    tasks.delete()
+    return Response('Task has been Deleted!')
 
 class CustomLoginView(LoginView):
     template_name = 'app/login.html'

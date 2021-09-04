@@ -5,6 +5,12 @@ from django.contrib.auth.views import LogoutView
 
 
 urlpatterns = [
+     path('task-list-api/', views.TaskListAPI, name='task-list-api'),
+     path('task-detail-api/<str:pk>/', views.TaskDetailAPI, name='task-detail-api'),
+     path('task-update-api/<str:pk>/', views.TaskUpdateAPI, name='task-update-api'),
+     path('task-create-api/', views.TaskCreateAPI, name='task-create-api'),
+     path('task-delete-api/<str:pk>/', views.TaskDeleteAPI, name='task-delete-api'),
+     
     path('', TaskList.as_view(), name='tasks'),
     path('task/<int:pk>/', TaskDetail.as_view(), name='task'),
     path('create-task/', TaskCreate.as_view(), name='create-task'),
